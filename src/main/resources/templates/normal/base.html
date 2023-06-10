@@ -29,7 +29,9 @@
            
             
             <li class="nav-item">
-              <a class="nav-link" href="#" tabindex="-1" aria-disabled="true"><span th:text="${user.name}"></span></a>
+              <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">
+              
+              <!--<span th:text="${user.name}"></span></a>  -->
             </li>
             
             <li class="nav-item">
@@ -48,7 +50,7 @@
 		<span onclick="toggleSidebar()" class="crossBtn">&times;</span>
 		
 		<a href="#" th:href="@{/user/normal_user}" class="item"><i class="fa-solid fa-house"></i> Home</a>
-        <a href="#" class="item"><i class="fa-solid fa-address-book"></i> View Contact</a>
+        <a href="#" th:href="@{/user/showcontacts}" class="item"><i class="fa-solid fa-address-book"></i> View Contact</a>
         <a href="#" th:href="@{/user/addcontact}" class="item"><i class="fa-thin fa-address-book"></i> Add Contact</a>
         <a href="#" class="item"><i class="fa-thin fa-address-book"></i> Your Profile</a>
         <a href="#" class="item"><i class="fa-solid fa-gear"></i> Setting</a>

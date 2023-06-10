@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,10 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +33,7 @@ import com.jayway.jsonpath.internal.Path;
 import in.nitish.entity.Contact;
 import in.nitish.entity.User;
 import in.nitish.helper.Message;
+import in.nitish.repository.ContactRepository;
 import in.nitish.repository.UserRepository;
 import in.nitish.service.UserService;
 
@@ -39,6 +45,9 @@ public class UserController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ContactRepository contactRepository;
 	
 	@Autowired
 	UserService userService;
@@ -127,5 +136,29 @@ public class UserController {
 		}
 		return "normal/test";
 	}
+	
+	//	show contact
+	//  per Page=5[n]
+	// current Page=0
+	
+	
+	@GetMapping("/showcontacts/{page}")
+	public String showContacts(@PathVariable("page") Integer page,Model model,Principal principal) {
+		model.addAttribute("title","View Contact");
+		
+		String userName = principal.getName();
+		User userDetails = this.userRepository.getUserByUserName(userName);
+		List<Contact> contact = userDetails.getContact();     //get the contact
+//		model.addAttribute("contact",contact);
+		Pageable pageable = PageRequest.of(page, 1);
+//		List<Contact> contacts=this.contactRepository.getContactsByUserId(userDetails.getId());
+		Page<Contact> contacts=this.contactRepository.getContactsByUserId(userDetails.getId(),pageable);
+		LOGGER.info("Get All Contacts {}  by userId {}",contacts,userDetails.getId());
+		model.addAttribute("contacts",contacts);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", contacts.getTotalPages());
+		return "normal/show_contacts";
+	}
+	
 	
 }

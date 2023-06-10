@@ -29,7 +29,7 @@
 								th:action="@{/user/process-contact}" class="mt-2">
 
 								<!-- First Name -->
-								<div class="input-group">
+								<div required class="input-group">
 									<div class="input-group-prepend">
 										<div class="input-group-text mr-3">
 											<i class="fa fa-plus"></i>
@@ -87,8 +87,8 @@
 								
 								<!-- Contact Description -->
 								
-								<div class="form-group mt-3">
-									<textarea name="description" id="description" class="form-control" rows="10" placeholder="Enter your contact Description" >
+								<div id="mytextarea" class="form-group mt-3">
+									<textarea name="description"  class="form-control" rows="10" placeholder="Enter your contact Description" >
 									</textarea>
 								
 								</div>
@@ -109,7 +109,12 @@
 				</div>
 			</div>
 		</div>
-
+				<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+				<script>
+     				 tinymce.init({
+      				  selector: '#mytextarea'
+     							 });
+    </script>
 	</section>
 </body>
 </html>
