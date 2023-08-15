@@ -1,5 +1,6 @@
 package in.nitish.config;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableWebSecurity
@@ -50,5 +52,10 @@ public class MyConfig extends WebSecurityConfigurerAdapter {
 		.defaultSuccessUrl("/user/normal_user/")
 //		.failureUrl("/login-fail")
 		.and().csrf().disable();
+	}
+	
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplate) {
+		return restTemplate.build();
 	}
 }

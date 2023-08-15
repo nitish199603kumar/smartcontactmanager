@@ -28,12 +28,30 @@
   <tbody>
     <tr th:each="c : ${contacts}">
       <th scope="row" th:text="${'SCM2023'+c.cId}">1</th>
-      <td th:text="${c.name}"></td>
-      <td th:text="${c.email}"></td>
+      
+      <td>
+      <img src="" class="my_profile_picture" th:src="@{'/Image/' + ${c.image}}" alt="profile-photo">
+      <span th:text="${c.name}"></span>
+      
+      </td>
+      
+      <td >
+      <!--<a href="#" th:href="@{'/user/contact/'+${c.cId}}">  -->
+      <a href="#" th:href="@{'/user/'+${c.cId}+'/contact'}">
+      <span th:text="${c.email}"></span>
+      </a>
+      
+      
+      </td>
       <td th:text="${c.phone}"></td>
       <td>
-      	<button class="btn btn-danger btn-sm">Delete</button>
-      	<button class="btn btn-primary btn-sm">Update</button>
+     <!--  <a href="#" th:onclick="|deleteContact(${c.cId})|" class="btn btn-danger btn-sm">Delete</a>  -->
+      	<a th:href="@{'/user/deleteUser/' + ${c.cId}}" class="btn btn-danger btn-sm">Delete</a> 
+      	
+      	<form method="post" th:action="@{'/user/updateContact/' + ${c.cId}}" class="mt-2">
+      		<button type="submit" class="btn btn-primary btn-sm">Update</button>
+      	</form>
+      	
       
       </td> 
     </tr>
