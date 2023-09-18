@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,5 +38,6 @@ public class Contact {
 	private String description;
 	
 	@ManyToOne
+	@JsonIgnore
 	private User user;
 }

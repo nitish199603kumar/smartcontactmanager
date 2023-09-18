@@ -20,6 +20,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.web.servlet.result.HeaderResultMatchers;
 import org.springframework.ui.Model;
@@ -48,6 +49,9 @@ public class UserController {
 	
 	private final static Logger LOGGER=LoggerFactory.getLogger(UserController.class);
 
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -160,6 +164,7 @@ public class UserController {
 //		List<Contact> contacts=this.contactRepository.getContactsByUserId(userDetails.getId());
 		Page<Contact> contacts=this.contactRepository.getContactsByUserId(userDetails.getId(),pageable);
 		LOGGER.info("Get All Contacts {}  by userId {}",contacts,userDetails.getId());
+		model.addAttribute("user", userDetails);
 		model.addAttribute("contacts",contacts);
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", contacts.getTotalPages());
@@ -175,6 +180,7 @@ public class UserController {
 		Contact contact = contactDetails.get();
 		String userName = principal.getName();
 		User userByUserName = this.userRepository.getUserByUserName(userName);
+		model.addAttribute("user", userByUserName);
 		if(userByUserName.getId()==contact.getUser().getId()) //If having only one line statement,we can leave{} bracket
 		{	
 			model.addAttribute("contact", contact);
@@ -271,6 +277,71 @@ public class UserController {
 		}
 		
 		return "redirect:/user/"+contact.getCId()+"/contact";
+	}
+
+	
+	// handle profile 
+	
+	@GetMapping("/profile")
+	public String profileHandler(Model model,Principal principal) {
+		
+//		By using principal we find-out the username(whatever you are using for login(like-email,phoneNumber)) 
+		String email = principal.getName();
+		User user = this.userRepository.getUserByUserName(email);
+		
+		model.addAttribute("user",user);
+		model.addAttribute("title", "Your Profile");
+		return "/normal/profile";
+	}
+	//Open Settings handler
+	
+	@GetMapping("/settings")
+	public String openSettings(Model model,Principal principal) {
+		
+		String email = principal.getName();
+		User user = this.userRepository.getUserByUserName(email);
+		
+		model.addAttribute("user",user);
+		
+		
+		return "/normal/settings";
+	}
+	
+	@PostMapping("/change-password")
+	public String chagePassword(@RequestParam("oldPassword") String oldPassword,@RequestParam("newPassword") String newPassword
+			,Model model,Principal principal,HttpSession session) {
+		System.out.println("Old Password : " +oldPassword + "\n" + "New Password : " +newPassword);
+		String email = principal.getName();
+		User user = this.userRepository.getUserByUserName(email);
+		model.addAttribute("user",user);
+		//Password is encrypted 
+		System.out.println("Current Password : " +user.getPassword());
+		
+		boolean decodedPassword=this.bCryptPasswordEncoder.matches(oldPassword, user.getPassword());
+		System.out.println("Dcrypted Password "+decodedPassword);
+		if(decodedPassword) {
+			LOGGER.info("Old Password and user current Pssword(db) is match");
+			user.setPassword(this.bCryptPasswordEncoder.encode(newPassword));
+			this.userRepository.save(user);
+			session.setAttribute("message", new Message("Your Password updated Successfully...", "success"));
+			LOGGER.info("Your Password updated successfully...");
+			
+		}else {
+			
+			session.setAttribute("message", new Message("Old password is not correct ", "danger"));
+			LOGGER.info("Old Password and user current Password(db) did not match");
+			return "redirect:/user/settings";
+		}
+		return "redirect:/user/normal_user";	
+	}
+	
+	//User Login Forgot-password 
+	@GetMapping("/forgot-password")
+	public String forgotPassword(Model model,Principal principal) {
+		String email = principal.getName();
+		User user = this.userRepository.getUserByUserName(email);
+		model.addAttribute("user",user);
+		return "/normal/forgot-password";
 	}
 	
 }

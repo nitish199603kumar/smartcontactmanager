@@ -9,7 +9,19 @@
 <body>
 
     <section>
-        <h1>This is user private Page</h1>
+        <div class="container">
+      	<div class="card">
+      	<div class="container text-center">
+      	<img style="height: 200px; width: 200px;" src=""
+						class="my_profile_picture"
+						th:src="@{'/Image/abc.jpg'}" alt="profile-photo">
+		</div>
+		<h1 font-weight-bold class="text-center">Smart Contact Manager</h1>
+        <p class="text-center">Start Collecting your contact in very smarter way. We provide very efficient and smarter way of handling contact</p>
+        <a th:href="@{/user/addcontact}" class="btn btn-primary mt-2 btn-block text-uppercase">Add New Contact</a>
+		</div>
+		</div>
+		
         <!--  
         <h1>Welcome !! you are normal user</h1>
     	<h1>UserName : <span th:text="${user.name}"></span></h1>

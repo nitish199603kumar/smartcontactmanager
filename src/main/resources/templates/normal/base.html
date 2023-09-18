@@ -29,7 +29,7 @@
            
             
             <li class="nav-item">
-              <a class="nav-link" href="#" tabindex="-1" aria-disabled="true"><span>USER</span>
+              <a class="nav-link" href="#" tabindex="-1" aria-disabled="true"><span th:text="${user.name}"></span>
               
               <!--<span th:text="${user.name}"></span> -->
               </a>
@@ -53,8 +53,8 @@
 		<a href="#" th:href="@{/user/normal_user}" class="item"><i class="fa-solid fa-house"></i> Home</a>
         <a href="#" th:href="@{/user/showcontacts/0}" class="item"><i class="fa-solid fa-address-book"></i> View Contact</a>
         <a href="#" th:href="@{/user/addcontact}" class="item"><i class="fa-thin fa-address-book"></i> Add Contact</a>
-        <a href="#" class="item"><i class="fa-thin fa-address-book"></i> Your Profile</a>
-        <a href="#" class="item"><i class="fa-solid fa-gear"></i> Setting</a>
+        <a href="#" th:href="@{/user/profile}"class="item"><i class="fa-thin fa-address-book"></i> Your Profile</a>
+        <a href="#" th:href="@{/user/settings}"class="item"><i class="fa-solid fa-gear"></i> Setting</a>
         <a href="#" th:href="@{/logout}" class="item"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         <div class="divider"></div>
 		</div>
@@ -107,7 +107,7 @@
     			.then((willDelete) => {
     			  if (willDelete) {
     			   window.location="/user/deleteUser/" +cid;
-    			    });
+    			    };
     			  } else {
     			    swal("Your contact is not deleted !!");
     			  }
